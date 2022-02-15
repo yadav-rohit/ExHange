@@ -1,10 +1,11 @@
-import React from 'react'
+import React , {useContext} from 'react'
 import Image from 'next/image'
 import ethlogo from '../assets/eth.png'
 import { RiSettings3Fill } from 'react-icons/ri'
 import { AiOutlineDown } from 'react-icons/ai'
 import Modal from 'react-modal'
 import { useRouter } from 'next/router'
+import { TransactionContext } from '../Context/TransactionContext'
 
 Modal.setAppElement('#__next')
 
@@ -24,6 +25,14 @@ const style = {
 }
 
 function Main() {
+  const {formData , handleChange , sendTransaction} = useContext(TransactionContext);
+
+  const handleSubmit = async (e) => {
+       const {addressTo , amount} = formData;
+        e.preventDefault();
+        if(!addressTo || !amount) return ;
+        sendTransaction();
+  }          
   return (
     <div className={style.wrapper}>
       <div className={style.content}>
@@ -39,7 +48,7 @@ function Main() {
             className={style.transferPropInput}
             placeholder="0.0"
             pattern="^[0-9]*[.,]?[0-9]*$"
-            onChange={() => handdleChange(e, 'amount')}
+            onChange={e => handleChange(e, 'amount')}
           />
           <div className={style.currencySelector}>
             <div className={style.currencySelectorContent}>
@@ -65,7 +74,7 @@ function Main() {
           />
           <div className={style.currencySelector}></div>
         </div>
-        <div onClick={e => handleSubmit(e)} className={style.confirmButton}>
+        <div onClick= { (e) => handleSubmit(e)} className={style.confirmButton}>
           Confirm
         </div>
       </div>

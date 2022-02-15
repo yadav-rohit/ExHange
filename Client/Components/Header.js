@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect , useContext } from 'react'
 import Image from 'next/image'
 import ethlogo from '../assets/eth.png'
 import applogo from '../assets/applogo.png'
@@ -6,6 +6,7 @@ import ethcrncy from '../assets/ethCurrency.png'
 import { FiArrowUpRight } from 'react-icons/fi'
 import { AiOutlineDown } from 'react-icons/ai'
 import { HiOutlineDotsVertical } from 'react-icons/hi'
+import { TransactionContext } from '../Context/TransactionContext'
 
 const style = {
   wrapper: `p-4 w-screen flex justify-between items-center`,
@@ -23,10 +24,33 @@ const style = {
 }
 function Header() {
   const [activenav, setActive] = useState('pool')
+  const {currentAccount , connectWallet} = useContext(TransactionContext);
+   const [userName, setUserName] = useState();
+     
+     
+  useEffect(() => {
+         if (currentAccount) {
+      ;(async () => {
+       setUserName(
+            `${currentAccount.slice(0, 7)}...${currentAccount.slice(35)}`,
+          ) 
+      })()
+    }
+         
+         
+         
+         
+          
+  }, [currentAccount])
+
+
+  console.log(connectWallet , currentAccount );
+
+
   return (
     <div className={style.wrapper}>
       <div className={style.headlogo}>
-        <Image src={applogo} alt="Exhange Logo" height={60} width={60}></Image>
+        <Image src={applogo} alt="Exhange Logo" height={80} width={80}></Image>
       </div>
       <div className={style.nav}>
         <div className={style.navItemContainers}>
@@ -76,7 +100,14 @@ function Header() {
             <AiOutlineDown />
           </div>
         </div>
-        <div
+        {currentAccount?(
+          <div className={`${style.button} ${style.buttonPadding}`}>
+          <div className={style.buttonTextContainer}>
+           {userName}
+          </div>
+        </div>
+        ) :(
+          <div
           onClick={() => connectWallet()}
           className={`${style.button} ${style.buttonPadding}`}
         >
@@ -84,6 +115,8 @@ function Header() {
             Connect Wallet
           </div>
         </div>
+        )}
+        
         <div className={`${style.button} ${style.buttonPadding}`}>
           <div className={style.buttonIconContainer}>
             <HiOutlineDotsVertical />
